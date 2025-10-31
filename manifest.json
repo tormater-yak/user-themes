@@ -1,0 +1,9 @@
+{
+    "title": "User themes", 
+    "author": "[url=https://github.com/tormater-yak]tormater-yak[/url]", 
+    "readme": "Let users pick their own forum themes.",
+    "settings": [
+        {"id":"use_user_color_as_theme_color", "name":"Use user color as theme color", "type":"bool", "default":"0"},
+        {"id":"theme_whitelist","name":"Allowed themes (leave empty for all)","type":"text","default":""}
+    ]
+}
