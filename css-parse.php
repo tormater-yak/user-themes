@@ -168,16 +168,32 @@ function getColorFromIndex($theme, $index) {
     else $stylesheet = substr($stylesheet,$bgcolor + strlen("background-color:"));
     $end = strpos($stylesheet,";");
     $stylesheet = substr($stylesheet,0,$end);
-    if (str_contains($stylesheet,"#")) return $stylesheet;
-    else if (str_contains("$stylesheet","rgb")) {
+    if (str_contains($stylesheet,"#")) {
+        if (strlen($stylesheet) == 7) return $stylesheet; // #RRGGBB
+        if (strlen($stylesheet) == 9) return substr($stylesheet,0,7); // #RRGGBBAA
+        if (strlen($stylesheet) == 4 || strlen($stylesheet) == 5) { // #RGB or #RGBA
+            $temp = str_split($stylesheet);
+            return $temp[0] . $temp[1] . $temp[1] . $temp[2] . $temp[2] . $temp[3] . $temp[3];
+        }
+    }
+    else if (str_contains("$stylesheet","rgb")) { // rgb(RRR,GGG,BBB)
+        if (str_contains("$stylesheet","rgba")) { // rgba(RRR,GGG,BBB)
+            $stylesheet = str_replace('rgba(','rgb(',$stylesheet);
+        }
         $stylesheet = str_replace('rgb(','',$stylesheet);
         $stylesheet = str_replace(')','',$stylesheet);
         $rgbarray = explode(",",$stylesheet,3);
+        if (str_contains($rgbarray[0],"%")) {
+            foreach ($rgbarray as &$p) {
+                $p = (intval($p) / 100.0)*255;
+            }
+        }
         return sprintf("#%02x%02x%02x", $rgbarray[0], $rgbarray[1], $rgbarray[2]);
     }
-    else {
+    else if (array_key_exists($stylesheet, $colors)) {
         return $colors[$stylesheet];
     }
+    else return NULL;
 }
 
 
